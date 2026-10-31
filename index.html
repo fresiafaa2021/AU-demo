@@ -1,0 +1,953 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>My Interactive AU</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #111;
+    color: white;
+    overflow: hidden;
+}
+
+.phone {
+    width: 100%;
+    max-width: 430px;
+    height: 100dvh;
+    margin: auto;
+    position: relative;
+    overflow: hidden;
+    background: #f7dce6;
+}
+
+/* GENERAL */
+
+.screen {
+    position: absolute;
+    inset: 0;
+    display: none;
+    overflow: hidden;
+}
+
+.screen.active {
+    display: block;
+}
+
+.status {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 45px;
+    padding: 10px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 20;
+    font-size: 14px;
+    color: white;
+}
+
+.status-icons {
+    letter-spacing: 3px;
+}
+
+.home-indicator {
+    position: absolute;
+    width: 110px;
+    height: 5px;
+    border-radius: 20px;
+    background: white;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+}
+
+/* LOCK SCREEN */
+
+#lockScreen {
+    background:
+      linear-gradient(#0004,#0002),
+      url("lockscreen.jpg") center/cover,
+      linear-gradient(135deg,#344d2a,#a58c63);
+}
+
+.lock-content {
+    text-align: center;
+    padding-top: 95px;
+}
+
+.lock-icon {
+    font-size: 55px;
+    margin-bottom: 40px;
+}
+
+.lock-time {
+    font-size: clamp(90px, 25vw, 125px);
+    font-weight: 600;
+    letter-spacing: -5px;
+}
+
+.lock-date {
+    font-size: 23px;
+    margin-top: 35px;
+}
+
+.unlock-hint {
+    position: absolute;
+    bottom: 35px;
+    width: 100%;
+    text-align: center;
+    font-size: 14px;
+    color: #ffffffcc;
+}
+
+.lock-shortcuts {
+    position: absolute;
+    bottom: 65px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 28px;
+}
+
+/* PASSCODE */
+
+#passcodeScreen {
+    background: linear-gradient(145deg,#4b4141,#332c30);
+    text-align: center;
+}
+
+.pass-title {
+    margin-top: 30vh;
+    font-size: 23px;
+}
+
+.dots {
+    margin: 35px 0 65px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.dot.filled {
+    background: white;
+}
+
+.keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    width: 85%;
+    margin: auto;
+    gap: 18px 12px;
+}
+
+.key {
+    width: 85px;
+    height: 85px;
+    margin: auto;
+    border: 0;
+    border-radius: 50%;
+    background: #ffffff25;
+    color: white;
+    font-size: 34px;
+    cursor: pointer;
+}
+
+.key:active {
+    background: #ffffff65;
+}
+
+.key small {
+    display: block;
+    font-size: 10px;
+}
+
+.pass-bottom {
+    position: absolute;
+    bottom: 45px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    font-size: 16px;
+}
+
+.pass-bottom button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+}
+
+/* HOME SCREEN */
+
+#homeScreen {
+    background:
+      linear-gradient(#0001,#0001),
+      url("home.jpg") center/cover,
+      linear-gradient(135deg,#f5c7d5,#fff0f4);
+}
+
+.home-time {
+    position: absolute;
+    top: 45px;
+    left: 22px;
+    font-size: 17px;
+}
+
+.widgets {
+    position: absolute;
+    top: 17%;
+    left: 5%;
+    width: 90%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.widget {
+    min-height: 160px;
+    padding: 20px;
+    border-radius: 30px;
+    background: #ffffffed;
+    color: #222;
+}
+
+.widget.weather {
+    background: #438be0;
+    color: white;
+}
+
+.widget .big {
+    font-size: 50px;
+    margin: 8px 0;
+}
+
+.app-grid {
+    position: absolute;
+    top: 43%;
+    width: 100%;
+    padding: 0 25px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px 12px;
+}
+
+.app {
+    text-align: center;
+    cursor: pointer;
+    font-size: 12px;
+    color: white;
+    text-shadow: 0 1px 4px #555;
+}
+
+.app-icon {
+    width: 65px;
+    height: 65px;
+    margin: auto auto 7px;
+    border-radius: 19px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 35px;
+    background: white;
+    color: #333;
+    box-shadow: 0 3px 10px #0002;
+    position: relative;
+}
+
+.whatsapp-icon {
+    background: #16c96b;
+    color: white;
+}
+
+.badge {
+    position: absolute;
+    right: -5px;
+    top: -7px;
+    background: #fa3434;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    font-size: 12px;
+    text-shadow: none;
+}
+
+.dock {
+    position: absolute;
+    bottom: 35px;
+    left: 4%;
+    width: 92%;
+    height: 90px;
+    border-radius: 30px;
+    background: #ffffff88;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.dock .app-icon {
+    margin: 0;
+}
+
+.notification {
+    position: absolute;
+    top: 55px;
+    left: 5%;
+    width: 90%;
+    background: #fffffff0;
+    color: #222;
+    padding: 13px;
+    border-radius: 17px;
+    z-index: 30;
+    box-shadow: 0 4px 20px #0003;
+    display: none;
+    animation: slideDown .4s;
+    cursor: pointer;
+}
+
+.notification.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* WHATSAPP */
+
+#chatScreen {
+    background: #efe5d7;
+    color: #111;
+}
+
+.chat-header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 75px;
+    background: #f7f5ef;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 12px;
+    z-index: 10;
+}
+
+.back-btn {
+    border: none;
+    background: none;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    background: #aaa;
+    object-fit: cover;
+}
+
+.contact {
+    flex: 1;
+}
+
+.contact strong {
+    display: block;
+    font-size: 17px;
+}
+
+.contact small {
+    color: #777;
+}
+
+.header-actions {
+    font-size: 22px;
+    display: flex;
+    gap: 15px;
+}
+
+.chat-wallpaper {
+    position: absolute;
+    inset: 75px 0 65px;
+    background:
+      linear-gradient(#fce1b8dd,#fce1b8dd),
+      url("chat-bg.jpg") center/cover;
+    overflow-y: auto;
+    padding: 20px 12px;
+}
+
+.chat-date {
+    width: fit-content;
+    margin: 0 auto 20px;
+    background: #fff4;
+    border-radius: 8px;
+    padding: 5px 12px;
+    font-size: 11px;
+    color: #555;
+}
+
+.message {
+    max-width: 85%;
+    width: fit-content;
+    padding: 10px 12px 7px;
+    margin-bottom: 12px;
+    border-radius: 15px;
+    font-size: 16px;
+    line-height: 1.4;
+    position: relative;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.received {
+    background: white;
+    border-top-left-radius: 3px;
+    margin-right: auto;
+}
+
+.sent {
+    background: #d6f8ce;
+    border-top-right-radius: 3px;
+    margin-left: auto;
+}
+
+.message-time {
+    font-size: 10px;
+    color: #888;
+    margin-left: 8px;
+    display: inline-block;
+    text-align: right;
+}
+
+.ticks {
+    color: #3485d6;
+    margin-left: 4px;
+}
+
+.typing {
+    display: none;
+    background: white;
+    border-radius: 15px;
+    padding: 10px 15px;
+    width: fit-content;
+    color: #888;
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.typing.show {
+    display: block;
+}
+
+.chat-input-area {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    min-height: 65px;
+    background: #f7f5ef;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    z-index: 10;
+}
+
+.chat-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: white;
+    border-radius: 25px;
+    padding: 12px 15px;
+    font-size: 15px;
+    min-width: 0;
+}
+
+.send-btn {
+    border: none;
+    border-radius: 50%;
+    width: 43px;
+    height: 43px;
+    background: #128c7e;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.quick-replies {
+    position: absolute;
+    bottom: 72px;
+    width: 100%;
+    display: flex;
+    gap: 7px;
+    padding: 8px;
+    overflow-x: auto;
+    z-index: 9;
+}
+
+.quick-replies button {
+    border: 1px solid #128c7e;
+    background: white;
+    color: #128c7e;
+    padding: 8px 12px;
+    border-radius: 20px;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+@media(min-width: 500px) {
+    body {
+        background: #222;
+    }
+    .phone {
+        border-left: 1px solid #444;
+        border-right: 1px solid #444;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="phone">
+
+<!-- LOCK SCREEN -->
+<section class="screen active" id="lockScreen">
+    <div class="status">
+        <span>INDOSATOOREdoo</span>
+        <span class="status-icons">● 5G ▰</span>
+    </div>
+
+    <div class="lock-content" onclick="openPasscode()">
+        <div class="lock-icon">🔒</div>
+        <div class="lock-time" id="lockTime">10:05</div>
+        <div class="lock-date" id="lockDate">Selasa, 27 Oktober</div>
+    </div>
+
+    <div class="lock-shortcuts">
+        <span>🔦</span>
+        <span>📷</span>
+    </div>
+
+    <div class="unlock-hint">Ketuk layar untuk membuka</div>
+    <div class="home-indicator"></div>
+</section>
+
+<!-- PASSCODE -->
+<section class="screen" id="passcodeScreen">
+    <div class="status">
+        <span id="passTime">10:05</span>
+        <span>▮▮▮ 5G ▰</span>
+    </div>
+
+    <div class="pass-title">Masukkan Kode Sandi</div>
+
+    <div class="dots" id="dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+    </div>
+
+    <div class="keypad">
+        <button class="key" onclick="enterNumber(1)">1</button>
+        <button class="key" onclick="enterNumber(2)">2<small>ABC</small></button>
+        <button class="key" onclick="enterNumber(3)">3<small>DEF</small></button>
+        <button class="key" onclick="enterNumber(4)">4<small>GHI</small></button>
+        <button class="key" onclick="enterNumber(5)">5<small>JKL</small></button>
+        <button class="key" onclick="enterNumber(6)">6<small>MNO</small></button>
+        <button class="key" onclick="enterNumber(7)">7<small>PQRS</small></button>
+        <button class="key" onclick="enterNumber(8)">8<small>TUV</small></button>
+        <button class="key" onclick="enterNumber(9)">9<small>WXYZ</small></button>
+        <button class="key" style="grid-column:2" onclick="enterNumber(0)">0</button>
+    </div>
+
+    <div class="pass-bottom">
+        <button onclick="alert('Panggilan darurat')">Darurat</button>
+        <button onclick="showScreen('lockScreen')">Batal</button>
+    </div>
+
+    <div class="home-indicator"></div>
+</section>
+
+<!-- HOME SCREEN -->
+<section class="screen" id="homeScreen">
+
+    <div class="status">
+        <span id="homeStatusTime">10:05</span>
+        <span>▮▮▮ 5G ▰</span>
+    </div>
+
+    <div class="notification" id="notification"
+         onclick="openChat()">
+        <strong>🟢 WhatsApp · Mas Arsan</strong>
+        <div id="notificationText">Pesan baru dari Mas Arsan</div>
+        <small>Baru saja</small>
+    </div>
+
+    <div class="home-time" id="homeTime">10:05</div>
+
+    <div class="widgets">
+        <div class="widget">
+            <span style="color:#d75c5c">Sabtu</span>
+            <div class="big">17</div>
+            <strong>Gladi Festival</strong>
+            <small>Sepanjang hari</small>
+            <br><br>
+            <strong>Cuci Baju</strong>
+            <small>Sepanjang hari</small>
+        </div>
+
+        <div class="widget weather">
+            ☀️
+            <div style="font-size:20px">Seoul ↗</div>
+            <div class="big">18°</div>
+            <div>Sebagian Besar Cerah</div>
+            <small>T:21° R:12°</small>
+        </div>
+    </div>
+
+    <div class="app-grid">
+
+        <div class="app" onclick="alert('Instagram belum tersedia')">
+            <div class="app-icon" style="background:linear-gradient(45deg,#f90,#d24cff)">▣</div>
+            Instagram
+        </div>
+
+        <div class="app" onclick="alert('Galeri foto')">
+            <div class="app-icon">🌼</div>
+            Foto
+        </div>
+
+        <div class="app" onclick="alert('Mail belum tersedia')">
+            <div class="app-icon" style="background:#1685e9;color:white">✉</div>
+            Mail
+        </div>
+
+        <div class="app" onclick="alert('Kalender')">
+            <div class="app-icon">📅</div>
+            Kalender
+        </div>
+
+        <div class="app" onclick="alert('Jam')">
+            <div class="app-icon">🕒</div>
+            Jam
+        </div>
+
+        <div class="app" onclick="alert('Catatan')">
+            <div class="app-icon">📝</div>
+            Catatan
+        </div>
+
+        <div class="app" onclick="alert('Cuaca')">
+            <div class="app-icon">🌤️</div>
+            Cuaca
+        </div>
+
+        <div class="app" onclick="alert('Pengaturan')">
+            <div class="app-icon">⚙️</div>
+            Pengaturan
+        </div>
+
+    </div>
+
+    <div class="dock">
+        <div class="app-icon" onclick="alert('Telepon')">📞</div>
+        <div class="app-icon" onclick="alert('Browser')">🌐</div>
+
+        <div class="app-icon whatsapp-icon" onclick="openChat()">
+            ☎
+            <span class="badge" id="appBadge">1</span>
+        </div>
+
+        <div class="app-icon" onclick="alert('Musik')">♫</div>
+    </div>
+
+    <div class="home-indicator"></div>
+</section>
+
+<!-- WHATSAPP CHAT -->
+<section class="screen" id="chatScreen">
+
+    <div class="chat-header">
+        <button class="back-btn" onclick="showScreen('homeScreen')">‹</button>
+
+        <img class="avatar" src="arsan.jpg"
+             onerror="this.style.background='#999';this.src='';">
+
+        <div class="contact">
+            <strong>mas arsan</strong>
+            <small id="onlineStatus">online</small>
+        </div>
+
+        <div class="header-actions">
+            <span>▣</span>
+            <span>♧</span>
+        </div>
+    </div>
+
+    <div class="chat-wallpaper" id="chatMessages">
+
+        <div class="chat-date">HARI INI</div>
+
+        <div class="message received">
+            pulang lewat 19.00, gerbang saya kunci
+            <span class="message-time">16:15</span>
+        </div>
+
+        <div class="message sent">
+            mas?
+            <span class="message-time">16:20</span>
+            <span class="ticks">✓✓</span>
+        </div>
+
+        <div class="message sent">
+            umur aku 20 tahun lohh, kok jam pulang aku kayak anak sd
+            <span class="message-time">16:20</span>
+            <span class="ticks">✓✓</span>
+        </div>
+
+        <div class="message received">
+            ini rumah saya apa rumah kamu?
+            <span class="message-time">16:21</span>
+        </div>
+
+        <div class="message sent">
+            semua rumah milik Allah mas
+            <span class="message-time">16:22</span>
+            <span class="ticks">✓✓</span>
+        </div>
+
+        <div class="message received">
+            <div style="background:#eee;padding:8px;border-left:4px solid #e91e63;border-radius:5px;margin-bottom:8px">
+                <strong style="color:#e91e63">mas arsan</strong>
+                <br>
+                <small>pulang lewat 19.00, gerbang saya kunci</small>
+            </div>
+            siap siap koper di luar
+            <span class="message-time">16:23</span>
+        </div>
+
+        <div class="message sent">
+            siap 86🤌
+            <span class="message-time">16:23</span>
+            <span class="ticks">✓✓</span>
+        </div>
+
+        <div id="typingIndicator" class="typing">
+            Mas Arsan sedang mengetik...
+        </div>
+
+    </div>
+
+    <!-- QUICK REPLY -->
+    <div class="quick-replies">
+        <button onclick="autoType('mas jahat banget 😭')">mas jahat banget 😭</button>
+        <button onclick="autoType('iya mas, aku usahakan pulang cepat')">iya mas</button>
+        <button onclick="autoType('kalau aku pulang telat gimana?')">kalau telat?</button>
+        <button onclick="autoType('nggak takut aku tidur di luar?')">tidur di luar?</button>
+    </div>
+
+    <!-- INPUT -->
+    <div class="chat-input-area">
+        <span style="font-size:24px">＋</span>
+        <input
+            id="chatInput"
+            class="chat-input"
+            type="text"
+            placeholder="Ketik pesan"
+            autocomplete="off"
+        >
+        <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+
+    <div class="home-indicator" style="background:#777"></div>
+
+</section>
+
+</div>
+
+<script>
+
+// ============================
+// NAVIGASI
+// ============================
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+    });
+
+    document.getElementById(id).classList.add('active');
+}
+
+function openPasscode() {
+    showScreen('passcodeScreen');
+}
+
+function openChat() {
+    showScreen('chatScreen');
+
+    document.getElementById('notification').classList.remove('show');
+    document.getElementById('appBadge').style.display = 'none';
+
+    setTimeout(() => {
+        document.getElementById('chatInput').focus();
+    }, 300);
+}
+
+// ============================
+// KODE SANDI
+// ============================
+
+// Ganti kode sandi di sini
+const PASSWORD = "1234";
+
+let enteredPassword = "";
+
+function enterNumber(number) {
+    if (enteredPassword.length >= 4) return;
+
+    enteredPassword += number;
+    updateDots();
+
+    if (enteredPassword.length === 4) {
+        setTimeout(() => {
+            if (enteredPassword === PASSWORD) {
+                enteredPassword = "";
+                updateDots();
+                showScreen('homeScreen');
+                showNotification();
+            } else {
+                alert("Kode sandi salah!");
+                enteredPassword = "";
+                updateDots();
+            }
+        }, 200);
+    }
+}
+
+function updateDots() {
+    document.querySelectorAll('.dot').forEach((dot, index) => {
+        dot.classList.toggle('filled', index < enteredPassword.length);
+    });
+}
+
+// ============================
+// NOTIFIKASI
+// ============================
+
+function showNotification() {
+    const notification = document.getElementById('notification');
+
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 900);
+
+    setTimeout(() => {
+        notification.classList.remove('show');
+    }, 9000);
+}
+
+// ============================
+// AUTO TYPING
+// ============================
+
+// Teks otomatis masuk satu per satu.
+// Pesan TIDAK akan terkirim otomatis.
+
+let typingTimer;
+
+function autoType(text) {
+    const input = document.getElementById('chatInput');
+
+    clearInterval(typingTimer);
+    input.value = "";
+
+    let index = 0;
+
+    typingTimer = setInterval(() => {
+        input.value += text[index];
+        index++;
+
+        input.focus();
+
+        if (index >= text.length) {
+            clearInterval(typingTimer);
+        }
+    }, 55);
+}
+
+// ============================
+// KIRIM PESAN
+// ============================
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    clearInterval(typingTimer);
+
+    const container = document.getElementById('chatMessages');
+
+    const message = document.createElement('div');
+    message.className = 'message sent';
+
+    const content = document.createTextNode(text);
+    message.appendChild(content);
+
+    const time = document.createElement('span');
+    time.className = 'message-time';
+    time.textContent = getCurrentTime();
+
+    const ticks = document.createElement('span');
+    ticks.className = 'ticks';
+    ticks.textContent = '✓✓';
+
+    message.appendChild(time);
+    message.appendChild(ticks);
+
+    container.insertBefore(
+        message,
+        document.getElementById('typingIndicator')
+    );
+
+    input.value = "";
+    container.scrollTop = container.scrollHeight;
+
+    // Mas Arsan membalas setelah pesan dikirim
+    setTimeout(() => {
+        showTyping();
+    }, 1200);
+}
+
+function getCurrentTime() {
+    return new Date().toLocaleTimeStrin
